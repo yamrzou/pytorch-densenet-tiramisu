@@ -2,6 +2,7 @@ from typing import Optional, Sequence, Union
 
 from torch.nn import Module, Conv2d, BatchNorm2d, Linear, init
 from torch.nn import functional as F
+import torch
 
 from .transition_down import TransitionDown
 from .transition_up import TransitionUp
@@ -167,7 +168,7 @@ class FCDenseNet(Module):
                 init.constant_(module.bias, 0)
         # endregion
 
-    def forward(self, x):
+    def forward(self, x, aux):
         res = self.features(x)
 
         skip_tensors = []
@@ -188,4 +189,4 @@ class FCDenseNet(Module):
 
     def predict(self, x):
         logits = self(x)
-        return F.softmax(logits)
+        return torch.sigmoid(logits)
